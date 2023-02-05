@@ -1,5 +1,7 @@
 import UseInputHook from "../hooks/basicForm-use-input";
 
+const isNotEmpty = (value) => value.trim() !== "";
+
 const BasicForm = (props) => {
   const {
     value: nameInputValue,
@@ -8,7 +10,7 @@ const BasicForm = (props) => {
     inputValueChangeHandler: nameChangeHandler,
     inputBlurHandler: nameBlurHandler,
     reset: resetNameInput,
-  } = UseInputHook((value) => value.trim() !== "");
+  } = UseInputHook(isNotEmpty);
 
   const {
     value: lNameInput,
@@ -17,7 +19,7 @@ const BasicForm = (props) => {
     inputValueChangeHandler: lastNameChangeHandler,
     inputBlurHandler: lNameBlurHandler,
     reset: resetLastNameInput,
-  } = UseInputHook((value) => value.trim() !== "");
+  } = UseInputHook(isNotEmpty);
 
   const {
     value: emailInput,
@@ -31,7 +33,7 @@ const BasicForm = (props) => {
   const {
     value: passwordInput,
     isValid: enteredPasswordIsValid,
-    hasError:passwordInputHasError,
+    hasError: passwordInputHasError,
     inputValueChangeHandler: passwordChangeHandler,
     inputBlurHandler: passwordBlurHandler,
     reset: resetPasswordInput,
@@ -52,6 +54,9 @@ const BasicForm = (props) => {
     event.preventDefault();
 
     if (!nameInputValue && !lNameInput && !emailInput && !passwordInput) {
+      return;
+    }
+    if (!formIsValid){
       return;
     }
     console.log(nameInputValue);
@@ -128,12 +133,14 @@ const BasicForm = (props) => {
         <input
           type="password"
           id="password"
-           onChange={passwordChangeHandler}
-           onBlur={passwordBlurHandler}
-           value={passwordInput}
+          onChange={passwordChangeHandler}
+          onBlur={passwordBlurHandler}
+          value={passwordInput}
         />
         {passwordInputHasError && (
-          <p className="error-text">Password Must be greater than 6 characters !</p>
+          <p className="error-text">
+            Password Must be greater than 6 characters !
+          </p>
         )}
       </div>
 
