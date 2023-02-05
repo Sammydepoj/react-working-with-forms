@@ -1,4 +1,3 @@
-import { useState } from "react";
 import UseInputHook from "../hooks/basicForm-use-input";
 
 const BasicForm = (props) => {
@@ -11,72 +10,72 @@ const BasicForm = (props) => {
     reset: resetNameInput,
   } = UseInputHook((value) => value.trim() !== "");
 
-  const [lNameInput, setlNameInput] = useState("");
-  const [lNameIsTouched, setlNameIsTouched] = useState(false);
+  const {
+    value: lNameInput,
+    isValid: enteredlNameInputIsValid,
+    hasError: lNameInputHasError,
+    inputValueChangeHandler: lastNameChangeHandler,
+    inputBlurHandler: lNameBlurHandler,
+    reset: resetLastNameInput,
+  } = UseInputHook((value) => value.trim() !== "");
 
-  const [emailInput, setemailInput] = useState("");
-  const [emailIsTouched, setemailIsTouched] = useState(false);
+  const {
+    value: emailInput,
+    isValid: enteredEmailIsValid,
+    hasError: emailInputHasError,
+    inputValueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: resetEmailInput,
+  } = UseInputHook((value) => value.includes("@"));
 
-  const enteredlNameInputIsValid = lNameInput.trim() !== "";
-  const lNameInputIsValid = !enteredlNameInputIsValid && lNameIsTouched;
-
-  const enteredEmailIsValid = emailInput.includes("@");
-  const emailIsValid = !enteredEmailIsValid && emailIsTouched;
+  const {
+    value: passwordInput,
+    isValid: enteredPasswordIsValid,
+    hasError:passwordInputHasError,
+    inputValueChangeHandler: passwordChangeHandler,
+    inputBlurHandler: passwordBlurHandler,
+    reset: resetPasswordInput,
+  } = UseInputHook((value) => value.length > 6);
 
   let formIsValid = false;
 
-  if (nameInputValue && lNameInput && emailInput) {
+  if (
+    enteredNameIsValid &&
+    enteredlNameInputIsValid &&
+    enteredEmailIsValid &&
+    enteredPasswordIsValid
+  ) {
     formIsValid = true;
   }
 
-  const lastNameChangeHandler = (event) => {
-    setlNameInput(event.target.value);
-  };
-  const lNameBlurHandler = () => {
-    setlNameIsTouched(true);
-  };
-
-  const emailChangeHandler = (event) => {
-    setemailInput(event.target.value);
-  };
-  const emailBlurHandler = () => {
-    setemailIsTouched(true);
-  };
-
   const formSubmitHandler = (event) => {
     event.preventDefault();
-    // setNameValueTouched(true);
-    if (!enteredNameIsValid) {
-      return;
-    }
 
-    setlNameIsTouched(true);
-    setemailIsTouched(true);
-
-    if (!nameInputValue && !lNameInput && !emailInput) {
+    if (!nameInputValue && !lNameInput && !emailInput && !passwordInput) {
       return;
     }
     console.log(nameInputValue);
     console.log(lNameInput);
     console.log(emailInput);
+    console.log(passwordInput);
 
-    // setNameInputValue("");
-    // setNameValueTouched(false);
     resetNameInput();
-    setlNameInput("");
-    setlNameIsTouched(false);
-    setemailInput("");
-    setemailIsTouched(false);
+    resetLastNameInput();
+    resetEmailInput();
+    resetPasswordInput();
   };
 
   const nameInputClasses = nameInputHasError
     ? "form-control invalid"
     : "form-control";
-  const lNameInputClasses = lNameInputIsValid
+  const lNameInputClasses = lNameInputHasError
     ? "form-control invalid"
     : "form-control";
 
-  const emailInputClasses = emailIsValid
+  const emailInputClasses = emailInputHasError
+    ? "form-control invalid"
+    : "form-control";
+  const passwordInputClasses = passwordInputHasError
     ? "form-control invalid"
     : "form-control";
 
@@ -105,7 +104,7 @@ const BasicForm = (props) => {
             value={lNameInput}
             onBlur={lNameBlurHandler}
           />
-          {lNameInputIsValid && (
+          {lNameInputHasError && (
             <p className="error-text">Last name must not be empty!</p>
           )}
         </div>
@@ -119,24 +118,24 @@ const BasicForm = (props) => {
           onBlur={emailBlurHandler}
           value={emailInput}
         />
-        {emailIsValid && (
+        {emailInputHasError && (
           <p className="error-text">Email must contain the '@' symbol!</p>
         )}
       </div>
 
-      {/* <div className={emailInputClasses}>
+      <div className={passwordInputClasses}>
         <label htmlFor="password">Password</label>
         <input
           type="password"
           id="password"
-          // onChange={emailChangeHandler}
-          // onBlur={emailBlurHandler}
-          // value={emailInput}
+           onChange={passwordChangeHandler}
+           onBlur={passwordBlurHandler}
+           value={passwordInput}
         />
-        {emailIsValid && (
-          <p className="error-text">Email must contain the '@' symbol!</p>
+        {passwordInputHasError && (
+          <p className="error-text">Password Must be greater than 6 characters !</p>
         )}
-      </div> */}
+      </div>
 
       <div className="form-actions">
         <button disabled={!formIsValid}>Submit</button>
